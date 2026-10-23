@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>عيادة الشروق - حجز موعد</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/lib/font-awesome/6.4.0/css/all.min.css">
-  <!-- Firebase SDK -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
@@ -127,7 +127,6 @@
   </div>
 
   <script>
-    // تهيئة Firebase السحابية
     const firebaseConfig = {
       databaseURL: "https://alshourk-clinic-default-rtdb.firebaseio.com/"
     };
@@ -189,12 +188,11 @@
         createdAt: new Date().toLocaleString('ar-EG')
       };
 
-      // حفظ في السحابة فوراً
       db.ref('appointments/' + phoneInput).set(newBooking, function(error) {
         if (error) {
           alert('حدث خطأ أثناء الإرسال، حاول مرة أخرى.');
         } else {
-          alert('تم إرسال طلب الحجز بنجاح! يمكنك المتابعة برقم هاتفك.');
+          alert('تم إرسال طلب الحجز بنجاح!');
           document.getElementById('patientName').value = '';
           document.getElementById('patientPhone').value = '';
         }
