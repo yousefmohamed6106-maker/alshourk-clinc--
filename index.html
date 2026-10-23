@@ -10,16 +10,19 @@
     :root { --primary: #1b4d89; --primary-dark: #0f3057; --gold: #d4af37; --bg-light: #f4f7fb; --text-dark: #223354; --white: #ffffff; --shadow: 0 10px 30px rgba(27, 77, 137, 0.1); --radius: 16px; }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
     body { background-color: var(--bg-light); color: var(--text-dark); min-height: 100vh; padding-bottom: 40px; }
-    header { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: var(--white); padding: 30px 20px; text-align: center; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+    header { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: var(--white); padding: 25px 20px; text-align: center; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+    .logo-container { margin-bottom: 10px; }
+    .logo-container i { font-size: 2.5rem; color: var(--gold); }
     header h1 { font-size: 1.6rem; font-weight: 800; margin-bottom: 5px; }
-    header p { color: var(--gold); font-size: 0.95rem; font-weight: 700; }
-    .container { max-width: 500px; margin: -20px auto 0; padding: 0 16px; }
+    header p { color: #e2e8f0; font-size: 0.95rem; font-weight: 600; }
+    .container { max-width: 500px; margin: -15px auto 0; padding: 0 16px; }
     .card { background: var(--white); border-radius: var(--radius); padding: 25px; box-shadow: var(--shadow); border: 1px solid rgba(27, 77, 137, 0.08); margin-bottom: 20px; }
     .card-title { font-size: 1.2rem; font-weight: 800; color: var(--primary); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; border-bottom: 2px solid #eef2f6; padding-bottom: 10px; }
     .form-group { margin-bottom: 16px; }
     .form-group label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 0.9rem; color: #334155; }
     .form-group input, .form-group select { width: 100%; padding: 12px 14px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 0.95rem; font-weight: 600; outline: none; transition: 0.2s; background: #f8fafc; }
     .form-group input:focus, .form-group select:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(27, 77, 137, 0.1); }
+    .time-note { color: #dc2626; font-size: 0.8rem; font-weight: 700; margin-top: 5px; display: block; }
     .btn-submit { width: 100%; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: var(--white); border: none; padding: 14px; border-radius: 10px; font-weight: 800; font-size: 1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(27, 77, 137, 0.25); }
     .status-box { background: #f1f5f9; padding: 15px; border-radius: 10px; margin-top: 15px; border: 1px dashed #cbd5e1; font-size: 0.9rem; text-align: right; }
     .hidden { display: none; }
@@ -32,7 +35,10 @@
 <body>
 
   <header>
-    <h1>عيادة الشروق للرعاية الطبية</h1>
+    <div class="logo-container">
+      <i class="fa-solid fa-user-doctor"></i>
+    </div>
+    <h1>عيادة الشروق للرعاية الطبية Shurouk Clinic</h1>
     <p>حجز المواعيد والاستعلام أونلاين</p>
   </header>
 
@@ -41,38 +47,47 @@
     <div class="card" style="margin-top: 20px;">
       <div class="card-title"><i class="fa-solid fa-calendar-plus"></i> حجز موعد جديد</div>
       <form id="booking-form" onsubmit="submitBooking(event)">
+        
+        <!-- 1. اختيار الدكتور أولاً -->
+        <div class="form-group">
+          <label>اختر الطبيب المعالج</label>
+          <select id="doctor" required onchange="updateServices()">
+            <option value="">-- اختر الدكتور --</option>
+            <option value="د. أسماء بركات (استشاري القلب والأوعية الدموية)">د. أسماء بركات (استشاري القلب والأوعية الدموية)</option>
+            <option value="د. محمد إبراهيم (استشاري أمراض الباطنة والسكر)">د. محمد إبراهيم (استشاري أمراض الباطنة والسكر)</option>
+          </select>
+        </div>
+
+        <!-- 2. الكشوفات المتاحة حسب الدكتور -->
+        <div class="form-group">
+          <label>نوع الكشف / الخدمة المطلوبة</label>
+          <select id="service" required disabled>
+            <option value="">-- اختر الدكتور أولاً --</option>
+          </select>
+        </div>
+
         <div class="form-group">
           <label>اسم المريض رباعي</label>
           <input type="text" id="name" required placeholder="أدخل اسمك بالكامل">
         </div>
+
         <div class="form-group">
           <label>رقم الهاتف (واتساب)</label>
           <input type="tel" id="phone" required placeholder="01xxxxxxxx" pattern="[0-9]{11}">
         </div>
+
         <div class="form-group">
-          <label>اختر العيادة والطبيب</label>
-          <select id="dept" required>
-            <option value="">-- اختر العيادة --</option>
-            <option value="عيادة القلب - د. أسماء بركات">عيادة القلب - د. أسماء بركات</option>
-            <option value="عيادة الباطنة - د. محمد إبراهيم">عيادة الباطنة - د. محمد إبراهيم</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>نوع الكشف</label>
-          <select id="service" required>
-            <option value="كشف جديد">كشف جديد</option>
-            <option value="إعادة / استشارة">إعادة / استشارة</option>
-            <option value="فحوصات / رسم قلب">فحوصات / رسم قلب</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>اليوم المطلوب</label>
+          <label>تاريخ اليوم المطلوب</label>
           <input type="date" id="day" required>
         </div>
+
+        <!-- اختيار الوقت بدون ثواني ومحدد بـ step -->
         <div class="form-group">
-          <label>الوقت المفضل</label>
-          <input type="time" id="time" required>
+          <label>الوقت المفضل للكشف</label>
+          <input type="time" id="time" required step="60" min="17:00" max="22:00">
+          <span class="time-note"><i class="fa-solid fa-clock"></i> مواعيد العمل الرسمية للعيادة من 5:00 مساءً حتى 10:00 مساءً</span>
         </div>
+
         <button type="submit" class="btn-submit" id="submit-btn">
           <i class="fa-solid fa-paper-plane"></i> تأكيد إرسال الحجز
         </button>
@@ -83,7 +98,7 @@
     <div class="card">
       <div class="card-title"><i class="fa-solid fa-magnifying-glass"></i> الاستعلام عن حالة الحجز</div>
       <div class="form-group">
-        <label>أدخل رقم الهاتف للاستعلام</label>
+        <label>أدخل رقم الهاتف المسجل به الحجز</label>
         <input type="tel" id="check-phone" placeholder="01xxxxxxxx">
       </div>
       <button type="button" class="btn-submit" style="background: var(--primary-dark);" onclick="checkBookingStatus()">
@@ -94,23 +109,62 @@
   </div>
 
   <script>
-    // ضع رابط سكريبت جوجل الخاص بك هنا
-    const scriptURL = "https://script.google.com/macros/s/AKfycbyFTIfyztyJRblda7Yl3MGBeBmYd_DbGOcTUnLnFNPa3rgphgsw3lXLpMlfud53mDVl/exec";
+    const scriptURL = "YOUR_APPS_SCRIPT_URL_HERE";
+
+    // تحديث خدمات الدكتور المختارة
+    function updateServices() {
+      const doc = document.getElementById('doctor').value;
+      const serviceSelect = document.getElementById('service');
+      serviceSelect.innerHTML = '';
+
+      if (!doc) {
+        serviceSelect.disabled = true;
+        serviceSelect.innerHTML = '<option value="">-- اختر الدكتور أولاً --</option>';
+        return;
+      }
+
+      serviceSelect.disabled = false;
+      if (doc.includes('أسماء بركات')) {
+        serviceSelect.innerHTML = `
+          <option value="كشف قلب وتخطيط">كشف قلب وتخطيط</option>
+          <option value="فحص موجات صوتية على القلب (إيكو)">فحص موجات صوتية (إيكو)</option>
+          <option value="استشارة ومتابعة ضغط">استشارة ومتابعة ضغط</option>
+        `;
+      } else if (doc.includes('محمد إبراهيم')) {
+        serviceSelect.innerHTML = `
+          <option value="كشف باطنة عامة">كشف باطنة عامة</option>
+          <option value="متابعة مرضى السكر والضغط">متابعة مرضى السكر والضغط</option>
+          <option value="كشف وجهاز هضمي">كشف وجهاز هضمي</option>
+          <option value="استشارة باطنة">استشارة باطنة</option>
+        `;
+      }
+    }
 
     async function submitBooking(e) {
       e.preventDefault();
+      
+      const timeVal = document.getElementById('time').value; // HH:MM
+      if (timeVal) {
+        const [hours, minutes] = timeVal.split(':').map(Number);
+        // التشييك من 17:00 (5 م) إلى 22:00 (10 م)
+        if (hours < 17 || hours > 22 || (hours === 22 && minutes > 0)) {
+          alert('عذراً، العيادة تكون مغلقة في هذا الوقت!\nيرجى اختيار موعد بين الساعة 5:00 مساءً والساعة 10:00 مساءً.');
+          return;
+        }
+      }
+
       const btn = document.getElementById('submit-btn');
       btn.disabled = true;
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الإرسال...';
 
       const data = {
         action: "addBooking",
+        doctor: document.getElementById('doctor').value,
+        service: document.getElementById('service').value,
         name: document.getElementById('name').value,
         phone: document.getElementById('phone').value,
-        dept: document.getElementById('dept').value,
-        service: document.getElementById('service').value,
         day: document.getElementById('day').value,
-        time: document.getElementById('time').value
+        time: timeVal
       };
 
       try {
@@ -123,6 +177,7 @@
 
         alert('تم إرسال طلب الحجز بنجاح! يمكنك الاستعلام برقم هاتفك لمعرفة حالة الموعد.');
         document.getElementById('booking-form').reset();
+        updateServices();
       } catch (err) {
         alert('حدث خطأ أثناء إرسال البيانات، يرجى المحاولة لاحقاً.');
       } finally {
@@ -147,7 +202,7 @@
       if (oldScript) oldScript.remove();
 
       window.handleStatusResponse = function(bookings) {
-        const userBookings = bookings.filter(b => b.phone.toString() === phone);
+        const userBookings = bookings.filter(b => b.phone && b.phone.toString() === phone);
         if (userBookings.length === 0) {
           resDiv.innerHTML = `<span style="color:#dc2626; font-weight:700;"><i class="fa-solid fa-circle-exclamation"></i> لا يوجد حجز مسجل بهذا الرقم.</span>`;
         } else {
@@ -158,9 +213,10 @@
           else if (latest.status === 'rejected') statusHtml = `<div class="status-badge status-rejected">❌ تم الاعتذار / الموعد غير متاح</div>`;
 
           resDiv.innerHTML = `
-            <strong>الاسم:</strong> ${latest.name}<br>
-            <strong>العيادة:</strong> ${latest.dept}<br>
-            <strong>الموعد:</strong> ${latest.day} (${latest.time})<br>
+            <strong>اسم المريض:</strong> ${latest.name}<br>
+            <strong>الطبيب:</strong> ${latest.doctor}<br>
+            <strong>الخدمة:</strong> ${latest.service}<br>
+            <strong>الموعد:</strong> ${latest.day} الساعة (${latest.time})<br>
             <div style="margin-top:8px;">${statusHtml}</div>
           `;
         }
