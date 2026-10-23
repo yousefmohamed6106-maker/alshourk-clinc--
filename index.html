@@ -3,168 +3,217 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>حجز موعد - عيادة الشروق</title>
+  <title>عيادة الشروق للرعاية الطبية الشاملة</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root { --primary: #1b4d89; --primary-dark: #0f3057; --gold: #d4af37; --bg-light: #f4f7fb; --text-dark: #223354; --white: #ffffff; --shadow: 0 10px 30px rgba(27, 77, 137, 0.1); --radius: 16px; }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-    body { background-color: var(--bg-light); color: var(--text-dark); min-height: 100vh; padding-bottom: 40px; }
-    header { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: var(--white); padding: 25px 20px; text-align: center; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
-    .logo-container { margin-bottom: 10px; }
-    .logo-container i { font-size: 2.5rem; color: var(--gold); }
-    header h1 { font-size: 1.6rem; font-weight: 800; margin-bottom: 5px; }
-    header p { color: #e2e8f0; font-size: 0.95rem; font-weight: 600; }
-    .container { max-width: 500px; margin: -15px auto 0; padding: 0 16px; }
-    .card { background: var(--white); border-radius: var(--radius); padding: 25px; box-shadow: var(--shadow); border: 1px solid rgba(27, 77, 137, 0.08); margin-bottom: 20px; }
-    .card-title { font-size: 1.2rem; font-weight: 800; color: var(--primary); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; border-bottom: 2px solid #eef2f6; padding-bottom: 10px; }
-    .form-group { margin-bottom: 16px; }
-    .form-group label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 0.9rem; color: #334155; }
-    .form-group input, .form-group select { width: 100%; padding: 12px 14px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 0.95rem; font-weight: 600; outline: none; transition: 0.2s; background: #f8fafc; }
-    .form-group input:focus, .form-group select:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(27, 77, 137, 0.1); }
-    .time-note { color: #dc2626; font-size: 0.8rem; font-weight: 700; margin-top: 5px; display: block; }
-    .btn-submit { width: 100%; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: var(--white); border: none; padding: 14px; border-radius: 10px; font-weight: 800; font-size: 1rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(27, 77, 137, 0.25); }
-    .status-box { background: #f1f5f9; padding: 15px; border-radius: 10px; margin-top: 15px; border: 1px dashed #cbd5e1; font-size: 0.9rem; text-align: right; }
-    .hidden { display: none; }
-    .status-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-weight: 800; font-size: 0.8rem; margin-top: 6px; }
+    body { background-color: var(--bg-light); color: var(--text-dark); min-height: 100vh; display: flex; flex-direction: column; }
+    header { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: var(--white); padding: 20px 15px; text-align: center; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+    .logo-container { width: 100px; height: 100px; margin: 0 auto 10px; background: var(--white); border-radius: 50%; border: 3px solid var(--gold); overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .logo-img { width: 100%; height: 100%; object-fit: contain; }
+    header h1 { font-size: 1.5rem; font-weight: 800; }
+    header p { color: var(--gold); font-size: 0.85rem; font-weight: 700; }
+    .container { max-width: 500px; margin: 20px auto; padding: 0 16px; width: 100%; flex: 1; }
+    .card { background: var(--white); border-radius: var(--radius); padding: 24px 20px; box-shadow: var(--shadow); border: 1px solid rgba(27, 77, 137, 0.08); margin-bottom: 20px; }
+    .step-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #edf2f7; }
+    .step-title { font-size: 1.15rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+    .btn-back { background: #edf2f7; color: var(--primary); border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; cursor: pointer; }
+    .dept-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+    .dept-card { border: 2px solid #e1e8f0; border-radius: var(--radius); padding: 18px 15px; display: flex; align-items: center; gap: 15px; cursor: pointer; background: #fafbfc; }
+    .dept-icon { width: 50px; height: 50px; background: #e6f0fa; color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+    .dept-name { font-weight: 800; font-size: 1.1rem; color: var(--primary-dark); }
+    .doctor-name { font-size: 0.9rem; color: var(--gold); font-weight: 700; margin-top: 2px; }
+    .services-list { display: flex; flex-direction: column; gap: 12px; }
+    .service-item { border: 2px solid #e1e8f0; border-radius: 12px; padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #fafbfc; font-weight: 700; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 0.9rem; color: var(--primary-dark); }
+    .form-control { width: 100%; padding: 12px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 0.95rem; outline: none; background: #f8fafc; }
+    .form-control::placeholder { color: #94a3b8; font-weight: 500; }
+    .btn-submit { width: 100%; background: #25d366; color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1.1rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 15px; }
+    .status-badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-weight: 800; font-size: 0.85rem; margin-top: 8px; }
     .status-pending { background: #fef3c7; color: #d97706; }
     .status-approved { background: #dcfce7; color: #15803d; }
     .status-rejected { background: #fee2e2; color: #b91c1c; }
+    .error-msg { color: #dc2626; font-size: 0.85rem; font-weight: 700; margin-top: 4px; display: none; }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
 
   <header>
     <div class="logo-container">
-      <i class="fa-solid fa-user-doctor"></i>
+      <img src="logo.jpg" alt="لوجو عيادة الشروق" class="logo-img" onerror="this.style.display='none'">
     </div>
-    <h1>عيادة الشروق للرعاية الطبية Shurouk Clinic</h1>
-    <p>حجز المواعيد والاستعلام أونلاين</p>
+    <h1>عيادة الشروق</h1>
+    <p>للرعاية الطبية الشاملة</p>
   </header>
 
   <div class="container">
-    <!-- نموذج الحجز -->
-    <div class="card" style="margin-top: 20px;">
-      <div class="card-title"><i class="fa-solid fa-calendar-plus"></i> حجز موعد جديد</div>
-      <form id="booking-form" onsubmit="submitBooking(event)">
-        
-        <!-- 1. اختيار الدكتور أولاً -->
-        <div class="form-group">
-          <label>اختر الطبيب المعالج</label>
-          <select id="doctor" required onchange="updateServices()">
-            <option value="">-- اختر الدكتور --</option>
-            <option value="د. أسماء بركات (استشاري القلب والأوعية الدموية)">د. أسماء بركات (استشاري القلب والأوعية الدموية)</option>
-            <option value="د. محمد إبراهيم (استشاري أمراض الباطنة والسكر)">د. محمد إبراهيم (استشاري أمراض الباطنة والسكر)</option>
-          </select>
+    <div class="card" id="step-1">
+      <div class="step-header">
+        <div class="step-title"><i class="fa-solid fa-stethoscope"></i><span>حجز موعد جديد</span></div>
+      </div>
+      <div class="dept-grid">
+        <div class="dept-card" onclick="goToStep2('heart')">
+          <div class="dept-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+          <div><div class="dept-name">عيادة القلب</div><div class="doctor-name">د. أسماء بركات</div></div>
         </div>
-
-        <!-- 2. الكشوفات المتاحة حسب الدكتور -->
-        <div class="form-group">
-          <label>نوع الكشف / الخدمة المطلوبة</label>
-          <select id="service" required disabled>
-            <option value="">-- اختر الدكتور أولاً --</option>
-          </select>
+        <div class="dept-card" onclick="goToStep2('internal')">
+          <div class="dept-icon"><i class="fa-solid fa-user-doctor"></i></div>
+          <div><div class="dept-name">عيادة الباطنة</div><div class="doctor-name">د. محمد إبراهيم</div></div>
         </div>
-
-        <div class="form-group">
-          <label>اسم المريض رباعي</label>
-          <input type="text" id="name" required placeholder="أدخل اسمك بالكامل">
-        </div>
-
-        <div class="form-group">
-          <label>رقم الهاتف (واتساب)</label>
-          <input type="tel" id="phone" required placeholder="01xxxxxxxx" pattern="[0-9]{11}">
-        </div>
-
-        <div class="form-group">
-          <label>تاريخ اليوم المطلوب</label>
-          <input type="date" id="day" required>
-        </div>
-
-        <!-- اختيار الوقت بدون ثواني ومحدد بـ step -->
-        <div class="form-group">
-          <label>الوقت المفضل للكشف</label>
-          <input type="time" id="time" required step="60" min="17:00" max="22:00">
-          <span class="time-note"><i class="fa-solid fa-clock"></i> مواعيد العمل الرسمية للعيادة من 5:00 مساءً حتى 10:00 مساءً</span>
-        </div>
-
-        <button type="submit" class="btn-submit" id="submit-btn">
-          <i class="fa-solid fa-paper-plane"></i> تأكيد إرسال الحجز
-        </button>
-      </form>
+      </div>
     </div>
 
-    <!-- الاستعلام عن الحجز -->
-    <div class="card">
-      <div class="card-title"><i class="fa-solid fa-magnifying-glass"></i> الاستعلام عن حالة الحجز</div>
-      <div class="form-group">
-        <label>أدخل رقم الهاتف المسجل به الحجز</label>
-        <input type="tel" id="check-phone" placeholder="01xxxxxxxx">
+    <div class="card hidden" id="step-2">
+      <div class="step-header">
+        <div class="step-title"><i class="fa-solid fa-notes-medical"></i><span id="step2-title">اختر نوع الكشف</span></div>
+        <button class="btn-back" onclick="goToStep1()"><i class="fa-solid fa-arrow-right"></i> رجوع</button>
       </div>
-      <button type="button" class="btn-submit" style="background: var(--primary-dark);" onclick="checkBookingStatus()">
-        <i class="fa-solid fa-search"></i> فحص حالة الموعد
+      <div class="services-list" id="services-container"></div>
+    </div>
+
+    <div class="card hidden" id="step-3">
+      <div class="step-header">
+        <div class="step-title"><i class="fa-solid fa-calendar-check"></i><span>تفاصيل الموعد والمريض</span></div>
+        <button class="btn-back" onclick="backToStep2()"><i class="fa-solid fa-arrow-right"></i> رجوع</button>
+      </div>
+      <div class="form-group">
+        <label>اسم المريض بالكامل</label>
+        <input type="text" id="patient-name" class="form-control" placeholder="أدخل اسمك ثلاثياً (مثال: أحمد محمد علي)">
+        <div id="name-error" class="error-msg">برجاء إدخال الاسم ثلاثياً بشكل صحيح.</div>
+      </div>
+
+      <div class="form-group">
+        <label>رقم هاتف المريض</label>
+        <input type="tel" id="patient-phone" class="form-control" placeholder="أدخل رقم الهاتف (11 رقم)" maxlength="11">
+        <div id="phone-error" class="error-msg">رقم الهاتف غير صحيح! يجب أن يتكون من 11 رقماً.</div>
+      </div>
+
+      <div class="form-group">
+        <label>اليوم المفضل</label>
+        <select id="visit-day" class="form-control">
+          <option value="اليوم">اليوم</option>
+          <option value="غداً">غداً</option>
+          <option value="بعد غد">بعد غد</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>وقت الحجز (من 5:00 إلى 10:00 مساءً)</label>
+        <select id="visit-time" class="form-control">
+          <option value="05:00 PM">05:00 PM (5:00 عصراً)</option>
+          <option value="05:30 PM">05:30 PM (5:30 عصراً)</option>
+          <option value="06:00 PM">06:00 PM (6:00 مساءً)</option>
+          <option value="06:30 PM">06:30 PM (6:30 مساءً)</option>
+          <option value="07:00 PM">07:00 PM (7:00 مساءً)</option>
+          <option value="07:30 PM">07:30 PM (7:30 مساءً)</option>
+          <option value="08:00 PM">08:00 PM (8:00 مساءً)</option>
+          <option value="08:30 PM">08:30 PM (8:30 مساءً)</option>
+          <option value="09:00 PM">09:00 PM (9:00 مساءً)</option>
+          <option value="09:30 PM">09:30 PM (9:30 مساءً)</option>
+          <option value="10:00 PM">10:00 PM (10:00 مساءً)</option>
+        </select>
+      </div>
+
+      <button class="btn-submit" onclick="confirmAndSend()">
+        <i class="fa-brands fa-whatsapp" style="font-size: 1.3rem;"></i>
+        <span>تأكيد الحجز عبر الواتساب</span>
       </button>
-      <div id="status-result" class="status-box hidden"></div>
+    </div>
+
+    <div class="card hidden" id="step-status">
+      <div class="step-header">
+        <div class="step-title"><i class="fa-solid fa-magnifying-glass"></i><span>الاستعلام عن حالة الحجز</span></div>
+      </div>
+      <p style="font-size: 0.9rem; color: #475569; margin-bottom: 15px;">تم إرسال طلب الحجز بنجاح! أدخل رقم هاتفك للاستعلام عن حالة قبول الموعد:</p>
+      
+      <div class="form-group">
+        <label>أدخل رقم هاتفك للاستعلام</label>
+        <input type="tel" id="check-phone" class="form-control" placeholder="أدخل رقم الهاتف (11 رقم)" maxlength="11" onkeypress="if(event.key === 'Enter') checkBookingStatus()">
+      </div>
+      <button onclick="checkBookingStatus()" class="btn-submit" style="background: var(--primary);">
+        <i class="fa-solid fa-search"></i>
+        <span>فحص حالة الموعد</span>
+      </button>
+
+      <div id="status-result" class="hidden" style="margin-top: 15px; padding: 15px; background: #f8fafc; border-radius: 12px; border: 1.5px dashed #cbd5e1;"></div>
     </div>
   </div>
 
   <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbwv_DE3lO0r1NzgU5JSeevbWBI7-BaXgrfVxSpNzEcnMKDzfCI49WC98hkarNzfPEhq/exec";
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwiZmkQMr_s4noSJtAd7MJq25QoMupnQS1_8Ko68nBCJvrZ6vLTqZPLgV4w5vi5BKQz/exec";
+    const clinicWhatsAppNumber = "201044629414";
+    let selectedDeptKey = '', selectedDepartment = '', selectedDoctor = '', selectedService = '';
 
-    // تحديث خدمات الدكتور المختارة
-    function updateServices() {
-      const doc = document.getElementById('doctor').value;
-      const serviceSelect = document.getElementById('service');
-      serviceSelect.innerHTML = '';
+    const servicesData = {
+      heart: { doctor: 'د. أسماء بركات', deptName: 'عيادة القلب', items: ['كشف إيكو (Echo)', 'كشف رسم قلب (ECG)', 'كشف كامل (شامل)'] },
+      internal: { doctor: 'د. محمد إبراهيم', deptName: 'عيادة الباطنة', items: ['كشف عادي'] }
+    };
 
-      if (!doc) {
-        serviceSelect.disabled = true;
-        serviceSelect.innerHTML = '<option value="">-- اختر الدكتور أولاً --</option>';
-        return;
-      }
-
-      serviceSelect.disabled = false;
-      if (doc.includes('أسماء بركات')) {
-        serviceSelect.innerHTML = `
-          <option value="كشف قلب وتخطيط">كشف قلب وتخطيط</option>
-          <option value="فحص موجات صوتية على القلب (إيكو)">فحص موجات صوتية (إيكو)</option>
-          <option value="استشارة ومتابعة ضغط">استشارة ومتابعة ضغط</option>
-        `;
-      } else if (doc.includes('محمد إبراهيم')) {
-        serviceSelect.innerHTML = `
-          <option value="كشف باطنة عامة">كشف باطنة عامة</option>
-          <option value="متابعة مرضى السكر والضغط">متابعة مرضى السكر والضغط</option>
-          <option value="كشف وجهاز هضمي">كشف وجهاز هضمي</option>
-          <option value="استشارة باطنة">استشارة باطنة</option>
-        `;
-      }
+    function goToStep1() {
+      document.getElementById('step-1').classList.remove('hidden');
+      document.getElementById('step-2').classList.add('hidden');
+      document.getElementById('step-3').classList.add('hidden');
+      document.getElementById('step-status').classList.add('hidden');
     }
 
-    async function submitBooking(e) {
-      e.preventDefault();
-      
-      const timeVal = document.getElementById('time').value; // HH:MM
-      if (timeVal) {
-        const [hours, minutes] = timeVal.split(':').map(Number);
-        // التشييك من 17:00 (5 م) إلى 22:00 (10 م)
-        if (hours < 17 || hours > 22 || (hours === 22 && minutes > 0)) {
-          alert('عذراً، العيادة تكون مغلقة في هذا الوقت!\nيرجى اختيار موعد بين الساعة 5:00 مساءً والساعة 10:00 مساءً.');
-          return;
-        }
-      }
+    function goToStep2(deptKey) {
+      selectedDeptKey = deptKey; selectedDepartment = servicesData[deptKey].deptName; selectedDoctor = servicesData[deptKey].doctor;
+      document.getElementById('step2-title').innerText = `${selectedDepartment} (${selectedDoctor})`;
+      const container = document.getElementById('services-container'); container.innerHTML = '';
+      servicesData[deptKey].items.forEach(serviceName => {
+        const div = document.createElement('div'); div.className = 'service-item';
+        div.onclick = () => goToStep3(serviceName);
+        div.innerHTML = `<span>${serviceName}</span><i class="fa-solid fa-chevron-left" style="color:var(--gold)"></i>`;
+        container.appendChild(div);
+      });
+      document.getElementById('step-1').classList.add('hidden');
+      document.getElementById('step-2').classList.remove('hidden');
+    }
 
-      const btn = document.getElementById('submit-btn');
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الإرسال...';
+    function backToStep2() {
+      document.getElementById('step-1').classList.add('hidden');
+      document.getElementById('step-2').classList.remove('hidden');
+      document.getElementById('step-3').classList.add('hidden');
+    }
 
-      const data = {
+    function goToStep3(serviceName) {
+      selectedService = serviceName;
+      document.getElementById('step-2').classList.add('hidden');
+      document.getElementById('step-3').classList.remove('hidden');
+    }
+
+    async function confirmAndSend() {
+      const nameInput = document.getElementById('patient-name');
+      const phoneInput = document.getElementById('patient-phone');
+      const nameErr = document.getElementById('name-error');
+      const phoneErr = document.getElementById('phone-error');
+
+      const name = nameInput.value.trim();
+      const phone = phoneInput.value.trim();
+      const day = document.getElementById('visit-day').value;
+      const time = document.getElementById('visit-time').value;
+
+      nameErr.style.display = 'none';
+      phoneErr.style.display = 'none';
+
+      let isValid = true;
+      if (!name || name.split(' ').filter(w => w !== '').length < 2) { nameErr.style.display = 'block'; isValid = false; }
+      if (!phone || phone.length !== 11 || isNaN(phone)) { phoneErr.style.display = 'block'; isValid = false; }
+
+      if (!isValid) return;
+
+      const newBooking = {
         action: "addBooking",
-        doctor: document.getElementById('doctor').value,
-        service: document.getElementById('service').value,
-        name: document.getElementById('name').value,
-        phone: document.getElementById('phone').value,
-        day: document.getElementById('day').value,
-        time: timeVal
+        name,
+        phone,
+        dept: `${selectedDepartment} (${selectedDoctor})`,
+        service: selectedService,
+        day,
+        time
       };
 
       try {
@@ -172,62 +221,58 @@
           method: 'POST',
           mode: 'no-cors',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
+          body: JSON.stringify(newBooking)
         });
-
-        alert('تم إرسال طلب الحجز بنجاح! يمكنك الاستعلام برقم هاتفك لمعرفة حالة الموعد.');
-        document.getElementById('booking-form').reset();
-        updateServices();
-      } catch (err) {
-        alert('حدث خطأ أثناء إرسال البيانات، يرجى المحاولة لاحقاً.');
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> تأكيد إرسال الحجز';
+      } catch (e) {
+        console.log(e);
       }
+
+      const message = `طلب حجز جديد في *عيادة الشروق*:\n\n👤 *اسم المريض:* ${name}\n📞 *رقم الهاتف:* ${phone}\n🏥 *العيادة والطبيب:* ${selectedDepartment} (${selectedDoctor})\n🩺 *نوع الكشف:* ${selectedService}\n⏰ *الموعد المطلوب:* ${day} الساعة ${time}\n\nيرجى تأكيد الحجز.`;
+      window.open(`https://api.whatsapp.com/send?phone=${clinicWhatsAppNumber}&text=${encodeURIComponent(message)}`, '_blank');
+
+      document.getElementById('step-3').classList.add('hidden');
+      document.getElementById('check-phone').value = phone;
+      document.getElementById('step-status').classList.remove('hidden');
     }
 
     function checkBookingStatus() {
       const phone = document.getElementById('check-phone').value.trim();
       const resDiv = document.getElementById('status-result');
 
-      if (!phone || phone.length !== 11) {
+      if (!phone || phone.length !== 11 || isNaN(phone)) {
         alert('برجاء أدخل رقم هاتف صحيح مكون من 11 رقماً.');
         return;
       }
 
-      resDiv.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري البحث...';
+      resDiv.innerHTML = 'جاري البحث...';
       resDiv.classList.remove('hidden');
 
-      const oldScript = document.getElementById('status-jsonp');
+      const oldScript = document.getElementById('jsonp-status');
       if (oldScript) oldScript.remove();
 
-      window.handleStatusResponse = function(bookings) {
-        const userBookings = bookings.filter(b => b.phone && b.phone.toString() === phone);
+      window.handleStatus = function(data) {
+        const userBookings = data.filter(b => b.phone.toString() === phone);
         if (userBookings.length === 0) {
-          resDiv.innerHTML = `<span style="color:#dc2626; font-weight:700;"><i class="fa-solid fa-circle-exclamation"></i> لا يوجد حجز مسجل بهذا الرقم.</span>`;
+          resDiv.innerHTML = `<span style="color:#dc2626; font-weight:700;"><i class="fa-solid fa-circle-exclamation"></i> عذراً، لم نجد حجوزات مسجلة بهذا الرقم.</span>`;
         } else {
           const latest = userBookings[userBookings.length - 1];
           let statusHtml = '';
-          if (latest.status === 'pending') statusHtml = `<div class="status-badge status-pending">⏳ قيد الانتظار للمراجعة</div>`;
-          else if (latest.status === 'approved') statusHtml = `<div class="status-badge status-approved">✅ تم تأكيد الموعد بنجاح</div>`;
-          else if (latest.status === 'rejected') statusHtml = `<div class="status-badge status-rejected">❌ تم الاعتذار / الموعد غير متاح</div>`;
+          if (latest.status === 'pending') statusHtml = `<div class="status-badge status-pending">⏳ قيد الانتظار لمراجعة الريسبشن</div>`;
+          else if (latest.status === 'approved') statusHtml = `<div class="status-badge status-approved">✅ تم قبول الموعد وتأكيده من العيادة</div>`;
+          else if (latest.status === 'rejected') statusHtml = `<div class="status-badge status-rejected">❌ تم تعديل/تأجيل الموعد</div><p style="margin-top:8px; font-weight:700; color:#b91c1c;">ملاحظة العيادة: ${latest.note || 'برجاء التواصل معنا'}</p>`;
 
           resDiv.innerHTML = `
             <strong>اسم المريض:</strong> ${latest.name}<br>
-            <strong>الطبيب:</strong> ${latest.doctor}<br>
-            <strong>الخدمة:</strong> ${latest.service}<br>
-            <strong>الموعد:</strong> ${latest.day} الساعة (${latest.time})<br>
-            <div style="margin-top:8px;">${statusHtml}</div>
+            <strong>العيادة:</strong> ${latest.dept}<br>
+            <strong>الموعد المطلوب:</strong> ${latest.day} الساعة ${latest.time}<br>
+            <div style="margin-top:10px;">${statusHtml}</div>
           `;
         }
       };
 
       const script = document.createElement('script');
-      script.id = 'status-jsonp';
-      script.src = scriptURL + "?callback=handleStatusResponse&t=" + Date.now();
-      script.onerror = function() {
-        resDiv.innerHTML = '<span style="color:#dc2626;">حدث خطأ في الاتصال، حاول مجدداً.</span>';
-      };
+      script.id = 'jsonp-status';
+      script.src = scriptURL + "?callback=handleStatus&t=" + Date.now();
       document.body.appendChild(script);
     }
   </script>
