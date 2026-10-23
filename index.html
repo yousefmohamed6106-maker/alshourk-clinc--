@@ -3,107 +3,96 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>عيادة الشروق للرعاية الطبية الشاملة</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root { --primary: #1b4d89; --primary-dark: #0f3057; --gold: #d4af37; --bg-light: #f4f7fb; --text-dark: #223354; --white: #ffffff; --shadow: 0 10px 30px rgba(27, 77, 137, 0.1); --radius: 16px; }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-    body { background-color: var(--bg-light); color: var(--text-dark); min-height: 100vh; display: flex; flex-direction: column; }
-    header { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: var(--white); padding: 20px 15px; text-align: center; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
-    .logo-container { width: 100px; height: 100px; margin: 0 auto 10px; background: var(--white); border-radius: 50%; border: 3px solid var(--gold); overflow: hidden; display: flex; align-items: center; justify-content: center; }
-    .logo-img { width: 100%; height: 100%; object-fit: contain; }
-    header h1 { font-size: 1.5rem; font-weight: 800; }
-    header p { color: var(--gold); font-size: 0.85rem; font-weight: 700; }
-    .container { max-width: 500px; margin: 20px auto; padding: 0 16px; width: 100%; flex: 1; }
-    .card { background: var(--white); border-radius: var(--radius); padding: 24px 20px; box-shadow: var(--shadow); border: 1px solid rgba(27, 77, 137, 0.08); margin-bottom: 20px; }
-    .step-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #edf2f7; }
-    .step-title { font-size: 1.15rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 8px; }
-    .btn-back { background: #edf2f7; color: var(--primary); border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; cursor: pointer; }
-    .dept-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
-    .dept-card { border: 2px solid #e1e8f0; border-radius: var(--radius); padding: 18px 15px; display: flex; align-items: center; gap: 15px; cursor: pointer; background: #fafbfc; }
-    .dept-icon { width: 50px; height: 50px; background: #e6f0fa; color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
-    .dept-name { font-weight: 800; font-size: 1.1rem; color: var(--primary-dark); }
-    .doctor-name { font-size: 0.9rem; color: var(--gold); font-weight: 700; margin-top: 2px; }
-    .services-list { display: flex; flex-direction: column; gap: 12px; }
-    .service-item { border: 2px solid #e1e8f0; border-radius: 12px; padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #fafbfc; font-weight: 700; }
-    .form-group { margin-bottom: 14px; }
-    .form-group label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 0.9rem; color: var(--primary-dark); }
-    .form-control { width: 100%; padding: 12px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 0.95rem; outline: none; background: #f8fafc; }
-    .form-control::placeholder { color: #94a3b8; font-weight: 500; }
-    .btn-submit { width: 100%; background: #25d366; color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1.1rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 15px; }
-    .status-badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-weight: 800; font-size: 0.85rem; margin-top: 8px; }
-    .status-pending { background: #fef3c7; color: #d97706; }
-    .status-approved { background: #dcfce7; color: #15803d; }
-    .status-rejected { background: #fee2e2; color: #b91c1c; }
-    .error-msg { color: #dc2626; font-size: 0.85rem; font-weight: 700; margin-top: 4px; display: none; }
-    .hidden { display: none !important; }
-  </style>
+  <title>عيادة الشروق - حجز موعد</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/lib/font-awesome/6.4.0/css/all.min.css">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
 <body>
 
-  <header>
+  <header class="main-header">
     <div class="logo-container">
-      <img src="logo.jpg" alt="لوجو عيادة الشروق" class="logo-img" onerror="this.style.display='none'">
+      <img src="logo.jpg" alt="لوجو عيادة الشروق" class="logo-img">
     </div>
     <h1>عيادة الشروق</h1>
     <p>للرعاية الطبية الشاملة</p>
   </header>
 
-  <div class="container">
-    <div class="card" id="step-1">
-      <div class="step-header">
-        <div class="step-title"><i class="fa-solid fa-stethoscope"></i><span>حجز موعد جديد</span></div>
+  <div class="booking-card">
+    <div class="step-group">
+      <div class="step-title">
+        <i class="fa-solid fa-stethoscope"></i>
+        <span>اختر العيادة والدكتور</span>
       </div>
-      <div class="dept-grid">
-        <div class="dept-card" onclick="goToStep2('heart')">
-          <div class="dept-icon"><i class="fa-solid fa-heart-pulse"></i></div>
-          <div><div class="dept-name">عيادة القلب</div><div class="doctor-name">د. أسماء بركات</div></div>
+      <div class="options-grid">
+        <div class="card-option selected" onclick="selectCard(this, 'clinic')">
+          <div class="icon-wrapper"><i class="fa-solid fa-heart-pulse"></i></div>
+          <div class="info">
+            <div class="title">عيادة القلب</div>
+            <div class="sub">د. أسماء بركات</div>
+          </div>
         </div>
-        <div class="dept-card" onclick="goToStep2('internal')">
-          <div class="dept-icon"><i class="fa-solid fa-user-doctor"></i></div>
-          <div><div class="dept-name">عيادة الباطنة</div><div class="doctor-name">د. محمد إبراهيم</div></div>
+        <div class="card-option" onclick="selectCard(this, 'clinic')">
+          <div class="icon-wrapper"><i class="fa-solid fa-user-doctor"></i></div>
+          <div class="info">
+            <div class="title">عيادة الباطنة</div>
+            <div class="sub">د. محمد إبراهيم</div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="card hidden" id="step-2">
-      <div class="step-header">
-        <div class="step-title"><i class="fa-solid fa-notes-medical"></i><span id="step2-title">اختر نوع الكشف</span></div>
-        <button class="btn-back" onclick="goToStep1()"><i class="fa-solid fa-arrow-right"></i> رجوع</button>
+    <div class="step-group">
+      <div class="step-title">
+        <i class="fa-solid fa-notes-medical"></i>
+        <span>اختر نوع الكشف</span>
       </div>
-      <div class="services-list" id="services-container"></div>
+      <div class="options-grid">
+        <div class="card-option selected" onclick="selectCard(this, 'type')">
+          <div class="icon-wrapper"><i class="fa-solid fa-calendar-plus"></i></div>
+          <div class="info">
+            <div class="title">كشف جديد</div>
+            <div class="sub">المرة الأولى</div>
+          </div>
+        </div>
+        <div class="card-option" onclick="selectCard(this, 'type')">
+          <div class="icon-wrapper"><i class="fa-solid fa-rotate-right"></i></div>
+          <div class="info">
+            <div class="title">إعادة / استشارة</div>
+            <div class="sub">متابعة حالة</div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="card hidden" id="step-3">
-      <div class="step-header">
-        <div class="step-title"><i class="fa-solid fa-calendar-check"></i><span>تفاصيل الموعد والمريض</span></div>
-        <button class="btn-back" onclick="backToStep2()"><i class="fa-solid fa-arrow-right"></i> رجوع</button>
+    <div class="step-group">
+      <div class="step-title">
+        <i class="fa-solid fa-user"></i>
+        <span>تفاصيل الموعد والمريض</span>
       </div>
-      <div class="form-group">
-        <label>اسم المريض بالكامل</label>
-        <input type="text" id="patient-name" class="form-control" placeholder="أدخل اسمك ثلاثياً (مثال: أحمد محمد علي)">
-        <div id="name-error" class="error-msg">برجاء إدخال الاسم ثلاثياً بشكل صحيح.</div>
-      </div>
-
-      <div class="form-group">
-        <label>رقم هاتف المريض</label>
-        <input type="tel" id="patient-phone" class="form-control" placeholder="أدخل رقم الهاتف (11 رقم)" maxlength="11">
-        <div id="phone-error" class="error-msg">رقم الهاتف غير صحيح! يجب أن يتكون من 11 رقماً.</div>
+      
+      <div class="input-group">
+        <input type="text" id="patientName" placeholder="الاسم ثلاثياً" required>
+        <div class="error-msg" id="nameError">برجاء إدخال الاسم ثلاثياً بشكل صحيح.</div>
       </div>
 
-      <div class="form-group">
-        <label>اليوم المفضل</label>
-        <select id="visit-day" class="form-control">
+      <div class="input-group">
+        <input type="tel" id="patientPhone" placeholder="رقم الهاتف (مثال: 01012345678)" required>
+        <div class="error-msg" id="phoneError">رقم الهاتف غير صحيح! يجب أن يتكون من 11 رقماً.</div>
+      </div>
+
+      <div class="input-group">
+        <select id="appointmentDay">
           <option value="اليوم">اليوم</option>
           <option value="غداً">غداً</option>
           <option value="بعد غد">بعد غد</option>
         </select>
       </div>
 
-      <div class="form-group">
-        <label>وقت الحجز (من 5:00 إلى 10:00 مساءً)</label>
-        <select id="visit-time" class="form-control">
+      <div class="input-group">
+        <select id="appointmentTime">
           <option value="05:00 PM">05:00 PM (5:00 عصراً)</option>
           <option value="05:30 PM">05:30 PM (5:30 عصراً)</option>
           <option value="06:00 PM">06:00 PM (6:00 مساءً)</option>
@@ -118,136 +107,126 @@
         </select>
       </div>
 
-      <button class="btn-submit" onclick="confirmAndSend()">
-        <i class="fa-brands fa-whatsapp" style="font-size: 1.3rem;"></i>
-        <span>تأكيد الحجز عبر الواتساب</span>
-      </button>
+      <button class="submit-btn" onclick="submitBooking()"><i class="fa-solid fa-check-circle"></i> تأكيد إرسال الطلب</button>
     </div>
 
-    <div class="card hidden" id="step-status">
-      <div class="step-header">
-        <div class="step-title"><i class="fa-solid fa-magnifying-glass"></i><span>الاستعلام عن حالة الحجز</span></div>
+    <div class="step-group" style="border:none;">
+      <div class="step-title">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <span>الاستعلام عن حالة الحجز</span>
       </div>
-      <p style="font-size: 0.9rem; color: #475569; margin-bottom: 15px;">تم إرسال طلب الحجز بنجاح! أدخل رقم هاتفك للاستعلام عن حالة قبول الموعد:</p>
+      <p style="font-size:0.85rem; color:#666; margin-bottom:10px;">أدخل رقم هاتفك للاستعلام عن حالة قبول الموعد:</p>
       
-      <div class="form-group">
-        <label>أدخل رقم هاتفك للاستعلام</label>
-        <input type="tel" id="check-phone" class="form-control" placeholder="أدخل رقم الهاتف (11 رقم)" maxlength="11" onkeypress="if(event.key === 'Enter') checkBookingStatus()">
+      <div class="input-group">
+        <input type="tel" id="searchPhone" placeholder="أدخل رقم الهاتف للمتابعة">
+        <button class="submit-btn" style="background:#2b6cb0; margin-top:8px;" onclick="checkStatus()"><i class="fa-solid fa-search"></i> استعلام</button>
       </div>
-      <button onclick="checkBookingStatus()" class="btn-submit" style="background: var(--primary);">
-        <i class="fa-solid fa-search"></i>
-        <span>فحص حالة الموعد</span>
-      </button>
 
-      <div id="status-result" class="hidden" style="margin-top: 15px; padding: 15px; background: #f8fafc; border-radius: 12px; border: 1.5px dashed #cbd5e1;"></div>
+      <div id="statusResult"></div>
     </div>
   </div>
 
   <script>
-    const clinicWhatsAppNumber = "201044629414";
-    let selectedDeptKey = '', selectedDepartment = '', selectedDoctor = '', selectedService = '';
-
-    const servicesData = {
-      heart: { doctor: 'د. أسماء بركات', deptName: 'عيادة القلب', items: ['كشف إيكو (Echo)', 'كشف رسم قلب (ECG)', 'كشف كامل (شامل)'] },
-      internal: { doctor: 'د. محمد إبراهيم', deptName: 'عيادة الباطنة', items: ['كشف عادي'] }
+    // تهيئة Firebase السحابية
+    const firebaseConfig = {
+      databaseURL: "https://alshourk-clinic-default-rtdb.firebaseio.com/"
     };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-    function goToStep1() {
-      document.getElementById('step-1').classList.remove('hidden');
-      document.getElementById('step-2').classList.add('hidden');
-      document.getElementById('step-3').classList.add('hidden');
-      document.getElementById('step-status').classList.add('hidden');
+    let selectedClinic = "عيادة القلب - د. أسماء بركات";
+    let selectedType = "كشف جديد";
+
+    function selectCard(element, group) {
+      let siblings = element.parentElement.children;
+      for (let sibling of siblings) {
+        sibling.classList.remove('selected');
+      }
+      element.classList.add('selected');
+
+      if (group === 'clinic') {
+        selectedClinic = element.querySelector('.title').innerText + ' - ' + element.querySelector('.sub').innerText;
+      } else if (group === 'type') {
+        selectedType = element.querySelector('.title').innerText;
+      }
     }
 
-    function goToStep2(deptKey) {
-      selectedDeptKey = deptKey; selectedDepartment = servicesData[deptKey].deptName; selectedDoctor = servicesData[deptKey].doctor;
-      document.getElementById('step2-title').innerText = `${selectedDepartment} (${selectedDoctor})`;
-      const container = document.getElementById('services-container'); container.innerHTML = '';
-      servicesData[deptKey].items.forEach(serviceName => {
-        const div = document.createElement('div'); div.className = 'service-item';
-        div.onclick = () => goToStep3(serviceName);
-        div.innerHTML = `<span>${serviceName}</span><i class="fa-solid fa-chevron-left" style="color:var(--gold)"></i>`;
-        container.appendChild(div);
-      });
-      document.getElementById('step-1').classList.add('hidden');
-      document.getElementById('step-2').classList.remove('hidden');
-    }
+    function submitBooking() {
+      let nameInput = document.getElementById('patientName').value.trim();
+      let phoneInput = document.getElementById('patientPhone').value.trim();
+      let dayInput = document.getElementById('appointmentDay').value;
+      let timeInput = document.getElementById('appointmentTime').value;
 
-    function backToStep2() {
-      document.getElementById('step-1').classList.add('hidden');
-      document.getElementById('step-2').classList.remove('hidden');
-      document.getElementById('step-3').classList.add('hidden');
-    }
+      let nameError = document.getElementById('nameError');
+      let phoneError = document.getElementById('phoneError');
 
-    function goToStep3(serviceName) {
-      selectedService = serviceName;
-      document.getElementById('step-2').classList.add('hidden');
-      document.getElementById('step-3').classList.remove('hidden');
-    }
-
-    function confirmAndSend() {
-      const nameInput = document.getElementById('patient-name');
-      const phoneInput = document.getElementById('patient-phone');
-      const nameErr = document.getElementById('name-error');
-      const phoneErr = document.getElementById('phone-error');
-
-      const name = nameInput.value.trim();
-      const phone = phoneInput.value.trim();
-      const day = document.getElementById('visit-day').value;
-      const time = document.getElementById('visit-time').value;
-
-      nameErr.style.display = 'none';
-      phoneErr.style.display = 'none';
+      nameError.style.display = 'none';
+      phoneError.style.display = 'none';
 
       let isValid = true;
-      if (!name || name.split(' ').filter(w => w !== '').length < 2) { nameErr.style.display = 'block'; isValid = false; }
-      if (!phone || phone.length !== 11 || isNaN(phone)) { phoneErr.style.display = 'block'; isValid = false; }
+
+      if (nameInput.split(' ').length < 2 || nameInput.length < 6) {
+        nameError.style.display = 'block';
+        isValid = false;
+      }
+
+      if (!/^01[0125][0-9]{8}$/.test(phoneInput)) {
+        phoneError.style.display = 'block';
+        isValid = false;
+      }
 
       if (!isValid) return;
 
-      const newBooking = { id: Date.now(), name, phone, dept: `${selectedDepartment} (${selectedDoctor})`, service: selectedService, day, time, status: 'pending', note: '' };
-      
-      let bookings = JSON.parse(localStorage.getItem('shorouk_appointments') || '[]');
-      bookings.push(newBooking);
-      localStorage.setItem('shorouk_appointments', JSON.stringify(bookings));
+      let newBooking = {
+        id: Date.now(),
+        name: nameInput,
+        phone: phoneInput,
+        clinic: selectedClinic,
+        type: selectedType,
+        day: dayInput,
+        time: timeInput,
+        status: 'مُعلق (قيد الانتظار)',
+        createdAt: new Date().toLocaleString('ar-EG')
+      };
 
-      const message = `طلب حجز جديد في *عيادة الشروق*:\n\n👤 *اسم المريض:* ${name}\n📞 *رقم الهاتف:* ${phone}\n🏥 *العيادة والطبيب:* ${selectedDepartment} (${selectedDoctor})\n🩺 *نوع الكشف:* ${selectedService}\n⏰ *الموعد المطلوب:* ${day} الساعة ${time}\n\nيرجى تأكيد الحجز.`;
-      window.open(`https://api.whatsapp.com/send?phone=${clinicWhatsAppNumber}&text=${encodeURIComponent(message)}`, '_blank');
-
-      document.getElementById('step-3').classList.add('hidden');
-      document.getElementById('check-phone').value = phone;
-      document.getElementById('step-status').classList.remove('hidden');
+      // حفظ في السحابة فوراً
+      db.ref('appointments/' + phoneInput).set(newBooking, function(error) {
+        if (error) {
+          alert('حدث خطأ أثناء الإرسال، حاول مرة أخرى.');
+        } else {
+          alert('تم إرسال طلب الحجز بنجاح! يمكنك المتابعة برقم هاتفك.');
+          document.getElementById('patientName').value = '';
+          document.getElementById('patientPhone').value = '';
+        }
+      });
     }
 
-    function checkBookingStatus() {
-      const phone = document.getElementById('check-phone').value.trim();
-      const resDiv = document.getElementById('status-result');
+    function checkStatus() {
+      let searchPhone = document.getElementById('searchPhone').value.trim();
+      let resultDiv = document.getElementById('statusResult');
 
-      if (!phone || phone.length !== 11 || isNaN(phone)) {
-        alert('برجاء أدخل رقم هاتف صحيح مكون من 11 رقماً.');
+      if (!searchPhone) {
+        alert('برجاء كتابة رقم الهاتف للبحث');
         return;
       }
 
-      const bookings = JSON.parse(localStorage.getItem('shorouk_appointments') || '[]');
-      const userBookings = bookings.filter(b => b.phone === phone);
-
-      if (userBookings.length === 0) {
-        resDiv.innerHTML = `<span style="color:#dc2626; font-weight:700;"><i class="fa-solid fa-circle-exclamation"></i> عذراً، لم نجد حجوزات مسجلة بهذا الرقم.</span>`;
-      } else {
-        const latest = userBookings[userBookings.length - 1];
-        let statusHtml = '';
-        if (latest.status === 'pending') statusHtml = `<div class="status-badge status-pending">⏳ قيد الانتظار لمراجعة الريسبشن</div>`;
-        else if (latest.status === 'approved') statusHtml = `<div class="status-badge status-approved">✅ تم قبول الموعد وتأكيده من العيادة</div>`;
-        else if (latest.status === 'rejected') statusHtml = `<div class="status-badge status-rejected">❌ تم تعديل/تأجيل الموعد</div><p style="margin-top:8px; font-weight:700; color:#b91c1c;">ملاحظة العيادة: ${latest.note || 'برجاء التواصل معنا'}</p>`;
-
-        resDiv.innerHTML = `
-          <strong>اسم المريض:</strong> ${latest.name}<br>
-          <strong>العيادة:</strong> ${latest.dept}<br>
-          <strong>الموعد المطلوب:</strong> ${latest.day} الساعة ${latest.time}<br>
-          <div style="margin-top:10px;">${statusHtml}</div>
-        `;
-      }
-      resDiv.classList.remove('hidden');
+      db.ref('appointments/' + searchPhone).once('value').then((snapshot) => {
+        if (snapshot.exists()) {
+          let data = snapshot.val();
+          resultDiv.style.display = 'block';
+          resultDiv.innerHTML = `
+            <div style="background:#ebf8ff; padding:12px; border-radius:8px; border:1px solid #bee3f8; margin-top:10px;">
+              <strong>اسم المريض:</strong> ${data.name}<br>
+              <strong>العيادة:</strong> ${data.clinic}<br>
+              <strong>الموعد:</strong> ${data.day} الساعة ${data.time}<br>
+              <strong>حالة الطلب:</strong> <span style="color:#c53030; font-weight:bold;">${data.status}</span>
+            </div>
+          `;
+        } else {
+          resultDiv.style.display = 'block';
+          resultDiv.innerHTML = `<div style="color:red; margin-top:10px;">لم يتم العثور على حجز بهذا الرقم.</div>`;
+        }
+      });
     }
   </script>
 </body>
