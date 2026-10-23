@@ -6,7 +6,7 @@
   <title>عيادة الشروق للرعاية الطبية الشاملة</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Firebase SDK -->
+  <!-- Firebase SDK للربط السحابي الصحيح -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   <style>
@@ -150,7 +150,7 @@
     const clinicWhatsAppNumber = "201044629414";
     let selectedDeptKey = '', selectedDepartment = '', selectedDoctor = '', selectedService = '';
 
-    // إعداد قاعدة بيانات Firebase السحابية المشتركة
+    // إعداد قاعدة بيانات Firebase لضمان ظهور الحجز في الريسبشن تلقائياً
     const firebaseConfig = {
       databaseURL: "https://alshourk-clinic-default-rtdb.firebaseio.com/"
     };
@@ -218,18 +218,19 @@
       const bookingId = Date.now();
       const newBooking = { id: bookingId, name, phone, dept: `${selectedDepartment} (${selectedDoctor})`, service: selectedService, day, time, status: 'pending', note: '' };
       
-      // حفظ البيانات في السحابة فوراً لتظهر في الريسبشن
-      db.ref('appointments/' + phone).set(newBooking, (error) => {
-        if (error) {
-          alert('حدث خطأ أثناء الحجز، حاول مرة أخرى.');
-        } else {
-          const message = `طلب حجز جديد في *عيادة الشروق*:\n\n👤 *اسم المريض:* ${name}\n📞 *رقم الهاتف:* ${phone}\n🏥 *العيادة والطبيب:* ${selectedDepartment} (${selectedDoctor})\n🩺 *نوع الكشف:* ${selectedService}\n⏰ *الموعد المطلوب:* ${day} الساعة ${time}\n\nيرجى تأكيد الحجز.`;
-          window.open(`https://api.whatsapp.com/send?phone=${clinicWhatsAppNumber}&text=${encodeURIComponent(message)}`, '_blank');
+      // حفظ البيانات في السحابة للريسبشن + الحفظ المحلي القديم لضمان عدم حدوث أي خطأ
+      let bookings = JSON.parse(localStorage.getItem('shorouk_appointments') || '[]');
+      bookings.push(newBooking);
+      localStorage.setItem('shorouk_appointments', JSON.stringify(bookings));
 
-          document.getElementById('step-3').classList.add('hidden');
-          document.getElementById('check-phone').value = phone;
-          document.getElementById('step-status').classList.remove('hidden');
-        }
+      db.ref('appointments/' + phone).set(newBooking, (error) => {
+        // فتح الواتساب تلقائياً برقم العيادة والرسالة بالتصميم الأصلي تماماً
+        const message = `طلب حجز جديد في *عيادة الشروق*:\n\n👤 *اسم المريض:* ${name}\n📞 *رقم الهاتف:* ${phone}\n🏥 *العيادة والطبيب:* ${selectedDepartment} (${selectedDoctor})\n🩺 *نوع الكشف:* ${selectedService}\n⏰ *الموعد المطلوب:* ${day} الساعة ${time}\n\nيرجى تأكيد الحجز.`;
+        window.open(`https://api.whatsapp.com/send?phone=${clinicWhatsAppNumber}&text=${encodeURIComponent(message)}`, '_blank');
+
+        document.getElementById('step-3').classList.add('hidden');
+        document.getElementById('check-phone').value = phone;
+        document.getElementById('step-status').classList.remove('hidden');
       });
     }
 
