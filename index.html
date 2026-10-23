@@ -6,9 +6,6 @@
   <title>عيادة الشروق للرعاية الطبية الشاملة</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Firebase SDK للربط السحابي الصحيح -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   <style>
     :root { --primary: #1b4d89; --primary-dark: #0f3057; --gold: #d4af37; --bg-light: #f4f7fb; --text-dark: #223354; --white: #ffffff; --shadow: 0 10px 30px rgba(27, 77, 137, 0.1); --radius: 16px; }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
@@ -147,15 +144,9 @@
   </div>
 
   <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbx2CcTc_s0yDKAJ6sqa2o3lajsicgqs_mZbThjxi717U0jkCfyU5PdC_iYXvb9nueliWg/exec";
     const clinicWhatsAppNumber = "201044629414";
     let selectedDeptKey = '', selectedDepartment = '', selectedDoctor = '', selectedService = '';
-
-    // إعداد قاعدة بيانات Firebase لضمان ظهور الحجز في الريسبشن تلقائياً
-    const firebaseConfig = {
-      databaseURL: "https://alshourk-clinic-default-rtdb.firebaseio.com/"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
 
     const servicesData = {
       heart: { doctor: 'د. أسماء بركات', deptName: 'عيادة القلب', items: ['كشف إيكو (Echo)', 'كشف رسم قلب (ECG)', 'كشف كامل (شامل)'] },
@@ -195,7 +186,7 @@
       document.getElementById('step-3').classList.remove('hidden');
     }
 
-    function confirmAndSend() {
+    async function confirmAndSend() {
       const nameInput = document.getElementById('patient-name');
       const phoneInput = document.getElementById('patient-phone');
       const nameErr = document.getElementById('name-error');
@@ -215,26 +206,36 @@
 
       if (!isValid) return;
 
-      const bookingId = Date.now();
-      const newBooking = { id: bookingId, name, phone, dept: `${selectedDepartment} (${selectedDoctor})`, service: selectedService, day, time, status: 'pending', note: '' };
-      
-      // حفظ البيانات في السحابة للريسبشن + الحفظ المحلي القديم لضمان عدم حدوث أي خطأ
-      let bookings = JSON.parse(localStorage.getItem('shorouk_appointments') || '[]');
-      bookings.push(newBooking);
-      localStorage.setItem('shorouk_appointments', JSON.stringify(bookings));
+      const newBooking = { 
+        action: "addBooking", 
+        name, 
+        phone, 
+        dept: `${selectedDepartment} (${selectedDoctor})`, 
+        service: selectedService, 
+        day, 
+        time 
+      };
 
-      db.ref('appointments/' + phone).set(newBooking, (error) => {
-        // فتح الواتساب تلقائياً برقم العيادة والرسالة بالتصميم الأصلي تماماً
-        const message = `طلب حجز جديد في *عيادة الشروق*:\n\n👤 *اسم المريض:* ${name}\n📞 *رقم الهاتف:* ${phone}\n🏥 *العيادة والطبيب:* ${selectedDepartment} (${selectedDoctor})\n🩺 *نوع الكشف:* ${selectedService}\n⏰ *الموعد المطلوب:* ${day} الساعة ${time}\n\nيرجى تأكيد الحجز.`;
-        window.open(`https://api.whatsapp.com/send?phone=${clinicWhatsAppNumber}&text=${encodeURIComponent(message)}`, '_blank');
+      try {
+        await fetch(scriptURL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newBooking)
+        });
+      } catch (e) {
+        console.error("Error sending to sheet:", e);
+      }
 
-        document.getElementById('step-3').classList.add('hidden');
-        document.getElementById('check-phone').value = phone;
-        document.getElementById('step-status').classList.remove('hidden');
-      });
+      const message = `طلب حجز جديد في *عيادة الشروق*:\n\n👤 *اسم المريض:* ${name}\n📞 *رقم الهاتف:* ${phone}\n🏥 *العيادة والطبيب:* ${selectedDepartment} (${selectedDoctor})\n🩺 *نوع الكشف:* ${selectedService}\n⏰ *الموعد المطلوب:* ${day} الساعة ${time}\n\nيرجى تأكيد الحجز.`;
+      window.open(`https://api.whatsapp.com/send?phone=${clinicWhatsAppNumber}&text=${encodeURIComponent(message)}`, '_blank');
+
+      document.getElementById('step-3').classList.add('hidden');
+      document.getElementById('check-phone').value = phone;
+      document.getElementById('step-status').classList.remove('hidden');
     }
 
-    function checkBookingStatus() {
+    async function checkBookingStatus() {
       const phone = document.getElementById('check-phone').value.trim();
       const resDiv = document.getElementById('status-result');
 
@@ -243,15 +244,22 @@
         return;
       }
 
-      db.ref('appointments/' + phone).once('value').then((snapshot) => {
-        if (!snapshot.exists()) {
+      resDiv.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري البحث...';
+      resDiv.classList.remove('hidden');
+
+      try {
+        const response = await fetch(scriptURL);
+        const bookings = await response.json();
+        const userBookings = bookings.filter(b => b.phone.toString() === phone);
+
+        if (userBookings.length === 0) {
           resDiv.innerHTML = `<span style="color:#dc2626; font-weight:700;"><i class="fa-solid fa-circle-exclamation"></i> عذراً، لم نجد حجوزات مسجلة بهذا الرقم.</span>`;
         } else {
-          const latest = snapshot.val();
+          const latest = userBookings[userBookings.length - 1];
           let statusHtml = '';
           if (latest.status === 'pending') statusHtml = `<div class="status-badge status-pending">⏳ قيد الانتظار لمراجعة الريسبشن</div>`;
           else if (latest.status === 'approved') statusHtml = `<div class="status-badge status-approved">✅ تم قبول الموعد وتأكيده من العيادة</div>`;
-          else if (latest.status === 'rejected') statusHtml = `<div class="status-badge status-rejected">❌ تم تعديل/تأجيل الموعد</div><p style="margin-top:8px; font-weight:700; color:#b91c1c;">ملاحظة العيادة: ${latest.note || 'برجاء التواصل معنا'}</p>`;
+          else if (latest.status === 'rejected') statusHtml = `<div class="status-badge status-rejected">❌ تم تعديل/تأجيل الموعد</div>`;
 
           resDiv.innerHTML = `
             <strong>اسم المريض:</strong> ${latest.name}<br>
@@ -260,8 +268,9 @@
             <div style="margin-top:10px;">${statusHtml}</div>
           `;
         }
-        resDiv.classList.remove('hidden');
-      });
+      } catch (err) {
+        resDiv.innerHTML = '<span style="color:#dc2626;">حدث خطأ أثناء جلب البيانات، حاول مجدداً.</span>';
+      }
     }
   </script>
 </body>
