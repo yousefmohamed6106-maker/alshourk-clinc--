@@ -86,6 +86,13 @@
         <div id="name-error" class="error-msg">برجاء إدخال الاسم ثلاثياً بشكل صحيح.</div>
       </div>
 
+      <!-- خانة العمر الجديدة -->
+      <div class="form-group">
+        <label>عمر المريض</label>
+        <input type="number" id="patient-age" class="form-control" placeholder="أدخل السن (مثال: 25)" min="1" max="120">
+        <div id="age-error" class="error-msg">برجاء إدخال العمر بشكل صحيح.</div>
+      </div>
+
       <div class="form-group">
         <label>رقم هاتف المريض</label>
         <input type="tel" id="patient-phone" class="form-control" placeholder="أدخل رقم الهاتف (11 رقم)" maxlength="11">
@@ -188,20 +195,26 @@
 
     async function confirmAndSend() {
       const nameInput = document.getElementById('patient-name');
+      const ageInput = document.getElementById('patient-age');
       const phoneInput = document.getElementById('patient-phone');
+      
       const nameErr = document.getElementById('name-error');
+      const ageErr = document.getElementById('age-error');
       const phoneErr = document.getElementById('phone-error');
 
       const name = nameInput.value.trim();
+      const age = ageInput.value.trim();
       const phone = phoneInput.value.trim();
       const day = document.getElementById('visit-day').value;
       const time = document.getElementById('visit-time').value;
 
       nameErr.style.display = 'none';
+      ageErr.style.display = 'none';
       phoneErr.style.display = 'none';
 
       let isValid = true;
       if (!name || name.split(' ').filter(w => w !== '').length < 2) { nameErr.style.display = 'block'; isValid = false; }
+      if (!age || isNaN(age) || age <= 0) { ageErr.style.display = 'block'; isValid = false; }
       if (!phone || phone.length !== 11 || isNaN(phone)) { phoneErr.style.display = 'block'; isValid = false; }
 
       if (!isValid) return;
@@ -209,6 +222,7 @@
       const newBooking = {
         action: "addBooking",
         name,
+        age,
         phone,
         dept: `${selectedDepartment} (${selectedDoctor})`,
         service: selectedService,
@@ -227,7 +241,7 @@
         console.log(e);
       }
 
-      const message = `طلب حجز جديد في *عيادة الشروق*:\n\n👤 *اسم المريض:* ${name}\n📞 *رقم الهاتف:* ${phone}\n🏥 *العيادة والطبيب:* ${selectedDepartment} (${selectedDoctor})\n🩺 *نوع الكشف:* ${selectedService}\n⏰ *الموعد المطلوب:* ${day} الساعة ${time}\n\nيرجى تأكيد الحجز.`;
+      const message = `طلب حجز جديد في *عيادة الشروق*:\n\n👤 *اسم المريض:* ${name}\n🎂 *العمر:* ${age} سنة\n📞 *رقم الهاتف:* ${phone}\n🏥 *العيادة والطبيب:* ${selectedDepartment} (${selectedDoctor})\n🩺 *نوع الكشف:* ${selectedService}\n⏰ *الموعد المطلوب:* ${day} الساعة ${time}\n\nيرجى تأكيد الحجز.`;
       window.open(`https://api.whatsapp.com/send?phone=${clinicWhatsAppNumber}&text=${encodeURIComponent(message)}`, '_blank');
 
       document.getElementById('step-3').classList.add('hidden');
@@ -263,6 +277,7 @@
 
           resDiv.innerHTML = `
             <strong>اسم المريض:</strong> ${latest.name}<br>
+            <strong>العمر:</strong> ${latest.age || 'غير محدد'} سنة<br>
             <strong>العيادة:</strong> ${latest.dept}<br>
             <strong>الموعد المطلوب:</strong> ${latest.day} الساعة ${latest.time}<br>
             <div style="margin-top:10px;">${statusHtml}</div>
